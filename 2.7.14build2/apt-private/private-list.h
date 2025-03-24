@@ -7,5 +7,4 @@ class CommandLine;
 
 APT_PUBLIC bool DoList(CommandLine &Cmd);
 
-
 #endif

@@ -7,18 +7,17 @@
 
 class DscExtract
 {
- public:
-   std::string Data;
-   pkgTagSection Section;
-   unsigned long long Length;
-   bool IsClearSigned;
+  public:
+  std::string Data;
+  pkgTagSection Section;
+  unsigned long long Length;
+  bool IsClearSigned;
 
-   bool TakeDsc(const void *Data, unsigned long long Size);
-   bool Read(std::string FileName);
+  bool TakeDsc(const void *Data, unsigned long long Size);
+  bool Read(std::string FileName);
 
-   DscExtract() : Length(0), IsClearSigned(false) {};
-   ~DscExtract() {};
+  DscExtract() : Length(0), IsClearSigned(false) {};
+  ~DscExtract() {};
 };
-
 
 #endif

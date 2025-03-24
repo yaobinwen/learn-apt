@@ -1,7 +1,7 @@
 /* weakptr.h - An object which supports weak pointers.
  *
  * Copyright (C) 2010 Julian Andres Klode <jak@debian.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -31,34 +31,37 @@
  * which will cause them to be set to NULL when the destructor of the
  * object is called.
  */
-class WeakPointable {
-private:
-    std::set<WeakPointable**> pointers;
+class WeakPointable
+{
+  private:
+  std::set<WeakPointable **> pointers;
 
-public:
+  public:
+  /**
+   * Add a new weak pointer.
+   */
+  inline void AddWeakPointer(WeakPointable **weakptr)
+  {
+    pointers.insert(weakptr);
+  }
 
-    /**
-     * Add a new weak pointer.
-     */
-    inline void AddWeakPointer(WeakPointable** weakptr) {
-       pointers.insert(weakptr);
-    }
+  /**
+   * Remove the weak pointer from the list of weak pointers.
+   */
+  inline void RemoveWeakPointer(WeakPointable **weakptr)
+  {
+    pointers.erase(weakptr);
+  }
 
-    /**
-     * Remove the weak pointer from the list of weak pointers.
-     */
-    inline void RemoveWeakPointer(WeakPointable **weakptr) {
-       pointers.erase(weakptr);
-    }
-
-    /**
-     * Deconstruct the object, set all weak pointers to NULL.
-     */
-    ~WeakPointable() {
-        std::set<WeakPointable**>::iterator iter = pointers.begin();
-        while (iter != pointers.end())
-            **(iter++) = NULL;
-    }
+  /**
+   * Deconstruct the object, set all weak pointers to NULL.
+   */
+  ~WeakPointable()
+  {
+    std::set<WeakPointable **>::iterator iter = pointers.begin();
+    while (iter != pointers.end())
+      **(iter++) = NULL;
+  }
 };
 
 #endif // WEAK_POINTER_H

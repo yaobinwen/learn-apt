@@ -5,7 +5,7 @@
    SRV record support
 
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef SRVREC_H
 #define SRVREC_H
 
@@ -18,30 +18,30 @@
 
 class APT_PUBLIC SrvRec
 {
- public:
-   std::string target;
-   u_int16_t priority;
-   u_int16_t weight;
-   u_int16_t port;
+  public:
+  std::string target;
+  u_int16_t priority;
+  u_int16_t weight;
+  u_int16_t port;
 
-   // each server is assigned a interval [start, end] in the space of [0, max]
-   int random_number_range_start;
-   int random_number_range_end;
-   int random_number_range_max;
+  // each server is assigned a interval [start, end] in the space of [0, max]
+  int random_number_range_start;
+  int random_number_range_end;
+  int random_number_range_max;
 
-   bool operator<(SrvRec const &other) const {
-      return this->priority < other.priority;
-   }
-   bool operator==(SrvRec const &other) const;
+  bool operator<(SrvRec const &other) const
+  {
+    return this->priority < other.priority;
+  }
+  bool operator==(SrvRec const &other) const;
 
-   SrvRec(std::string const Target, u_int16_t const Priority,
-	 u_int16_t const Weight, u_int16_t const Port) :
-      target(Target), priority(Priority), weight(Weight), port(Port),
-      random_number_range_start(0), random_number_range_end(0),
-      random_number_range_max(0) {}
+  SrvRec(std::string const Target, u_int16_t const Priority,
+         u_int16_t const Weight, u_int16_t const Port) : target(Target), priority(Priority), weight(Weight), port(Port),
+                                                         random_number_range_start(0), random_number_range_end(0),
+                                                         random_number_range_max(0) {}
 };
 
-/** \brief Get SRV records from host/port (builds the query string internally) 
+/** \brief Get SRV records from host/port (builds the query string internally)
  */
 APT_PUBLIC bool GetSrvRecords(std::string name, std::vector<SrvRec> &Result);
 

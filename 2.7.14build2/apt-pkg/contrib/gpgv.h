@@ -5,7 +5,7 @@
    Helpers to deal with gpgv better and more easily
 
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef CONTRIB_GPGV_H
 #define CONTRIB_GPGV_H
 
@@ -13,7 +13,6 @@
 
 #include <string>
 #include <vector>
-
 
 class FileFd;
 
@@ -40,11 +39,12 @@ class FileFd;
  * @param key is the specific one to be used instead of using all
  */
 APT_PUBLIC void ExecGPGV(std::string const &File, std::string const &FileSig,
-      int const &statusfd, int fd[2], std::string const &Key = "") APT_NORETURN;
+                         int const &statusfd, int fd[2], std::string const &Key = "") APT_NORETURN;
 inline APT_NORETURN void ExecGPGV(std::string const &File, std::string const &FileSig,
-      int const &statusfd = -1) {
-   int fd[2];
-   ExecGPGV(File, FileSig, statusfd, fd);
+                                  int const &statusfd = -1)
+{
+  int fd[2];
+  ExecGPGV(File, FileSig, statusfd, fd);
 }
 
 /** \brief Split an inline signature into message and signature
@@ -70,8 +70,8 @@ inline APT_NORETURN void ExecGPGV(std::string const &File, std::string const &Fi
  *  @param SignatureFile is the FileFd all signatures will be written to
  *  @return true if the splitting was successful, false otherwise
  */
-APT_PUBLIC bool SplitClearSignedFile(std::string const &InFile, FileFd * const ContentFile,
-      std::vector<std::string> * const ContentHeader, FileFd * const SignatureFile);
+APT_PUBLIC bool SplitClearSignedFile(std::string const &InFile, FileFd *const ContentFile,
+                                     std::vector<std::string> *const ContentHeader, FileFd *const SignatureFile);
 
 /** \brief open a file which might be clear-signed
  *

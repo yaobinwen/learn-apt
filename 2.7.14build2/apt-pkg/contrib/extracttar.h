@@ -3,13 +3,13 @@
 /* ######################################################################
 
    Extract a Tar - Tar Extractor
-   
-   The tar extractor takes an ordinary gzip compressed tar stream from 
+
+   The tar extractor takes an ordinary gzip compressed tar stream from
    the given file and explodes it, passing the individual items to the
    given Directory Stream for processing.
-   
+
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef PKGLIB_EXTRACTTAR_H
 #define PKGLIB_EXTRACTTAR_H
 
@@ -18,38 +18,44 @@
 
 #include <string>
 
-
 class pkgDirStream;
 
 class APT_PUBLIC ExtractTar
 {
-   protected:
-   
-   struct TarHeader;
-   
-   // The varios types items can be
-   enum ItemType {NormalFile0 = '\0',NormalFile = '0',HardLink = '1',
-                  SymbolicLink = '2',CharacterDevice = '3',
-                  BlockDevice = '4',Directory = '5',FIFO = '6',
-                  GNU_LongLink = 'K',GNU_LongName = 'L'};
+  protected:
+  struct TarHeader;
 
-   FileFd &File;
-   unsigned long long MaxInSize;
-   int GZPid;
-   FileFd InFd;
-   bool Eof;
-   std::string DecompressProg;
-   
-   // Fork and reap gzip
-   bool StartGzip();
-   bool Done();
+  // The varios types items can be
+  enum ItemType
+  {
+    NormalFile0 = '\0',
+    NormalFile = '0',
+    HardLink = '1',
+    SymbolicLink = '2',
+    CharacterDevice = '3',
+    BlockDevice = '4',
+    Directory = '5',
+    FIFO = '6',
+    GNU_LongLink = 'K',
+    GNU_LongName = 'L'
+  };
 
-   public:
+  FileFd &File;
+  unsigned long long MaxInSize;
+  int GZPid;
+  FileFd InFd;
+  bool Eof;
+  std::string DecompressProg;
 
-   bool Go(pkgDirStream &Stream);
+  // Fork and reap gzip
+  bool StartGzip();
+  bool Done();
 
-   ExtractTar(FileFd &Fd,unsigned long long Max,std::string DecompressionProgram);
-   virtual ~ExtractTar();
+  public:
+  bool Go(pkgDirStream &Stream);
+
+  ExtractTar(FileFd &Fd, unsigned long long Max, std::string DecompressionProgram);
+  virtual ~ExtractTar();
 };
 
 #endif

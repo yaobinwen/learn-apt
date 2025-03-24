@@ -5,7 +5,7 @@
    RSH method - Transfer files via rsh compatible program
 
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef APT_RSH_H
 #define APT_RSH_H
 
@@ -19,57 +19,55 @@ class FileFd;
 
 class RSHConn
 {
-   char Buffer[1024*10];
-   unsigned long Len;
-   int WriteFd;
-   int ReadFd;
-   URI ServerName;
-   std::string const Prog;
+  char Buffer[1024 * 10];
+  unsigned long Len;
+  int WriteFd;
+  int ReadFd;
+  URI ServerName;
+  std::string const Prog;
 
-   // Private helper functions
-   bool ReadLine(std::string &Text);
+  // Private helper functions
+  bool ReadLine(std::string &Text);
 
-   public:
+  public:
+  pid_t Process;
 
-   pid_t Process;
+  // Raw connection IO
+  bool WriteMsg(std::string &Text, bool Sync, const char *Fmt, ...);
+  bool Connect(std::string const &Host, std::string const &User);
+  bool Connect(std::string const &Host, unsigned int Port, std::string const &User);
+  bool Comp(URI Other) const { return Other.Host == ServerName.Host && Other.Port == ServerName.Port; };
 
-   // Raw connection IO
-   bool WriteMsg(std::string &Text,bool Sync,const char *Fmt,...);
-   bool Connect(std::string const &Host, std::string const &User);
-   bool Connect(std::string const &Host, unsigned int Port, std::string const &User);
-   bool Comp(URI Other) const {return Other.Host == ServerName.Host && Other.Port == ServerName.Port;};
+  // Connection control
+  bool Open();
+  void Close();
 
-   // Connection control
-   bool Open();
-   void Close();
+  // Query
+  bool Size(const char *Path, unsigned long long &Size);
+  bool ModTime(const char *Path, time_t &Time);
+  bool Get(const char *Path, FileFd &To, unsigned long long Resume,
+           Hashes &Hash, bool &Missing, unsigned long long Size);
 
-   // Query
-   bool Size(const char *Path,unsigned long long &Size);
-   bool ModTime(const char *Path, time_t &Time);
-   bool Get(const char *Path,FileFd &To,unsigned long long Resume,
-            Hashes &Hash,bool &Missing, unsigned long long Size);
-
-   RSHConn(std::string const &Prog, URI Srv);
-   ~RSHConn();
+  RSHConn(std::string const &Prog, URI Srv);
+  ~RSHConn();
 };
 
 #include "aptmethod.h"
 
 class RSHMethod : public aptMethod
 {
-   virtual bool Fetch(FetchItem *Itm) APT_OVERRIDE;
-   virtual bool Configuration(std::string Message) APT_OVERRIDE;
+  virtual bool Fetch(FetchItem *Itm) APT_OVERRIDE;
+  virtual bool Configuration(std::string Message) APT_OVERRIDE;
 
-   RSHConn *Server;
+  RSHConn *Server;
 
-   static std::string FailFile;
-   static int FailFd;
-   static time_t FailTime;
-   static APT_NORETURN void SigTerm(int);
+  static std::string FailFile;
+  static int FailFd;
+  static time_t FailTime;
+  static APT_NORETURN void SigTerm(int);
 
-   public:
-
-   explicit RSHMethod(std::string &&Prog);
+  public:
+  explicit RSHMethod(std::string &&Prog);
 };
 
 #endif

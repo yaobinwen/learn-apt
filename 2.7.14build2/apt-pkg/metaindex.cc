@@ -9,55 +9,55 @@
 
 #include <string>
 #include <vector>
-									/*}}}*/
+/*}}}*/
 
-struct metaIndexPrivate							/*{{{*/
+struct metaIndexPrivate /*{{{*/
 {
-   int Flags;
+  int Flags;
 };
-									/*}}}*/
+/*}}}*/
 
 std::string metaIndex::Describe() const
 {
-   return "Release";
+  return "Release";
 }
 
 pkgCache::RlsFileIterator metaIndex::FindInCache(pkgCache &Cache, bool const) const
 {
-   return pkgCache::RlsFileIterator(Cache);
+  return pkgCache::RlsFileIterator(Cache);
 }
 
-bool metaIndex::Merge(pkgCacheGenerator &Gen,OpProgress *) const
+bool metaIndex::Merge(pkgCacheGenerator &Gen, OpProgress *) const
 {
-   return Gen.SelectReleaseFile("", "");
+  return Gen.SelectReleaseFile("", "");
 }
 
 metaIndex::metaIndex(std::string const &URI, std::string const &Dist,
-      char const * const Type)
-: d(new metaIndexPrivate()), Indexes(NULL), Type(Type), URI(URI), Dist(Dist), Trusted(TRI_UNSET),
-   Date(0), ValidUntil(0), SupportsAcquireByHash(false), LoadedSuccessfully(TRI_UNSET)
+                     char const *const Type)
+    : d(new metaIndexPrivate()), Indexes(NULL), Type(Type), URI(URI), Dist(Dist), Trusted(TRI_UNSET),
+      Date(0), ValidUntil(0), SupportsAcquireByHash(false), LoadedSuccessfully(TRI_UNSET)
 {
-   /* nothing */
+  /* nothing */
 }
 
 metaIndex::~metaIndex()
 {
-   if (Indexes != 0)
-   {
-      for (std::vector<pkgIndexFile *>::iterator I = (*Indexes).begin();
-	    I != (*Indexes).end(); ++I)
-	 delete *I;
-      delete Indexes;
-   }
-   for (auto const &E: Entries)
-      delete E.second;
-   delete d;
+  if (Indexes != 0)
+  {
+    for (std::vector<pkgIndexFile *>::iterator I = (*Indexes).begin();
+         I != (*Indexes).end(); ++I)
+      delete *I;
+    delete Indexes;
+  }
+  for (auto const &E : Entries)
+    delete E.second;
+  delete d;
 }
 
 // one line Getters for public fields					/*{{{*/
 APT_PURE std::string metaIndex::GetURI() const { return URI; }
 APT_PURE std::string metaIndex::GetDist() const { return Dist; }
-APT_PURE const char* metaIndex::GetType() const { return Type; }
+APT_PURE const char *metaIndex::GetType() const { return Type; }
 APT_PURE metaIndex::TriState metaIndex::GetTrusted() const { return Trusted; }
 APT_PURE std::string metaIndex::GetSignedBy() const { return SignedBy; }
 APT_PURE std::string metaIndex::GetOrigin() const { return Origin; }
@@ -74,80 +74,81 @@ APT_PURE bool metaIndex::HasFlag(metaIndex::Flag Flag) const { return d->Flags &
 void metaIndex::SetFlag(metaIndex::Flag Flag) { d->Flags |= int(Flag); }
 APT_PURE metaIndex::TriState metaIndex::GetLoadedSuccessfully() const { return LoadedSuccessfully; }
 APT_PURE std::string metaIndex::GetExpectedDist() const { return Dist; }
-									/*}}}*/
-bool metaIndex::CheckDist(std::string const &MaybeDist) const		/*{{{*/
+/*}}}*/
+bool metaIndex::CheckDist(std::string const &MaybeDist) const /*{{{*/
 {
-   if (MaybeDist.empty() || this->Codename == MaybeDist || this->Suite == MaybeDist)
-      return true;
+  if (MaybeDist.empty() || this->Codename == MaybeDist || this->Suite == MaybeDist)
+    return true;
 
-   std::string Transformed = MaybeDist;
-   if (Transformed == "../project/experimental")
-      Transformed = "experimental";
+  std::string Transformed = MaybeDist;
+  if (Transformed == "../project/experimental")
+    Transformed = "experimental";
 
-   auto const pos = Transformed.rfind('/');
-   if (pos != std::string::npos)
-      Transformed = Transformed.substr(0, pos);
+  auto const pos = Transformed.rfind('/');
+  if (pos != std::string::npos)
+    Transformed = Transformed.substr(0, pos);
 
-   if (Transformed == ".")
-      Transformed.clear();
+  if (Transformed == ".")
+    Transformed.clear();
 
-   return Transformed.empty() || this->Codename == Transformed || this->Suite == Transformed;
+  return Transformed.empty() || this->Codename == Transformed || this->Suite == Transformed;
 }
-									/*}}}*/
+/*}}}*/
 APT_PURE metaIndex::checkSum *metaIndex::Lookup(std::string const &MetaKey) const /*{{{*/
 {
-   std::map<std::string, metaIndex::checkSum* >::const_iterator sum = Entries.find(MetaKey);
-   if (sum == Entries.end())
-      return NULL;
-   return sum->second;
+  std::map<std::string, metaIndex::checkSum *>::const_iterator sum = Entries.find(MetaKey);
+  if (sum == Entries.end())
+    return NULL;
+  return sum->second;
 }
-									/*}}}*/
-APT_PURE bool metaIndex::Exists(std::string const &MetaKey) const		/*{{{*/
+/*}}}*/
+APT_PURE bool metaIndex::Exists(std::string const &MetaKey) const /*{{{*/
 {
-   return Entries.find(MetaKey) != Entries.end();
+  return Entries.find(MetaKey) != Entries.end();
 }
-									/*}}}*/
-std::vector<std::string> metaIndex::MetaKeys() const			/*{{{*/
+/*}}}*/
+std::vector<std::string> metaIndex::MetaKeys() const /*{{{*/
 {
-   std::vector<std::string> keys;
-   std::map<std::string, checkSum *>::const_iterator I = Entries.begin();
-   while(I != Entries.end()) {
-      keys.push_back((*I).first);
-      ++I;
-   }
-   return keys;
+  std::vector<std::string> keys;
+  std::map<std::string, checkSum *>::const_iterator I = Entries.begin();
+  while (I != Entries.end())
+  {
+    keys.push_back((*I).first);
+    ++I;
+  }
+  return keys;
 }
-									/*}}}*/
-void metaIndex::swapLoad(metaIndex * const OldMetaIndex)		/*{{{*/
+/*}}}*/
+void metaIndex::swapLoad(metaIndex *const OldMetaIndex) /*{{{*/
 {
-   std::swap(SignedBy, OldMetaIndex->SignedBy);
-   std::swap(Suite, OldMetaIndex->Suite);
-   std::swap(Codename, OldMetaIndex->Codename);
-   std::swap(Date, OldMetaIndex->Date);
-   std::swap(ValidUntil, OldMetaIndex->ValidUntil);
-   std::swap(SupportsAcquireByHash, OldMetaIndex->SupportsAcquireByHash);
-   std::swap(Entries, OldMetaIndex->Entries);
-   std::swap(LoadedSuccessfully, OldMetaIndex->LoadedSuccessfully);
+  std::swap(SignedBy, OldMetaIndex->SignedBy);
+  std::swap(Suite, OldMetaIndex->Suite);
+  std::swap(Codename, OldMetaIndex->Codename);
+  std::swap(Date, OldMetaIndex->Date);
+  std::swap(ValidUntil, OldMetaIndex->ValidUntil);
+  std::swap(SupportsAcquireByHash, OldMetaIndex->SupportsAcquireByHash);
+  std::swap(Entries, OldMetaIndex->Entries);
+  std::swap(LoadedSuccessfully, OldMetaIndex->LoadedSuccessfully);
 
-   OldMetaIndex->Origin = Origin;
-   OldMetaIndex->Label = Label;
-   OldMetaIndex->Version =Version;
-   OldMetaIndex->DefaultPin = DefaultPin;
+  OldMetaIndex->Origin = Origin;
+  OldMetaIndex->Label = Label;
+  OldMetaIndex->Version = Version;
+  OldMetaIndex->DefaultPin = DefaultPin;
 }
-									/*}}}*/
+/*}}}*/
 
-bool metaIndex::IsArchitectureSupported(std::string const &) const	/*{{{*/
+bool metaIndex::IsArchitectureSupported(std::string const &) const /*{{{*/
 {
-   return true;
+  return true;
 }
-									/*}}}*/
-bool metaIndex::IsArchitectureAllSupportedFor(IndexTarget const &) const/*{{{*/
+/*}}}*/
+bool metaIndex::IsArchitectureAllSupportedFor(IndexTarget const &) const /*{{{*/
 {
-   return true;
+  return true;
 }
-									/*}}}*/
-bool metaIndex::HasSupportForComponent(std::string const &) const/*{{{*/
+/*}}}*/
+bool metaIndex::HasSupportForComponent(std::string const &) const /*{{{*/
 {
-   return true;
+  return true;
 }
-									/*}}}*/
+/*}}}*/

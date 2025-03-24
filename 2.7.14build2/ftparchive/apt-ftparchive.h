@@ -2,20 +2,20 @@
 // Description								/*{{{*/
 /* ######################################################################
 
-   Writer 
-   
+   Writer
+
    The file writer classes. These write various types of output, sources,
    packages and contents.
-   
+
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef APT_FTPARCHIVE_H
 #define APT_FTPARCHIVE_H
 
 #include <fstream>
 
-using std::ostream;
 using std::ofstream;
+using std::ostream;
 
 extern ostream c0out;
 extern ostream c1out;

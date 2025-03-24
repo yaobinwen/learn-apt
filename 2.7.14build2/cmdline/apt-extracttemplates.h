@@ -3,9 +3,9 @@
 /* ######################################################################
 
    apt-extracttemplate - tool to extract template and config data
-   
+
    ##################################################################### */
-									/*}}}*/
+/*}}}*/
 #ifndef _APTEXTRACTTEMPLATE_H_
 #define _APTEXTRACTTEMPLATE_H_
 
@@ -18,32 +18,38 @@ class pkgCache;
 
 class DebFile : public pkgDirStream
 {
-	FileFd File;
-	char *Control;
-	unsigned long ControlLen;
-	
-public:
-	explicit DebFile(const char *FileName);
-	~DebFile();
-	bool DoItem(Item &I, int &fd) APT_OVERRIDE;
-	bool Process(pkgDirStream::Item &I, const unsigned char *data, 
-		unsigned long long size, unsigned long long pos) APT_OVERRIDE;
+  FileFd File;
+  char *Control;
+  unsigned long ControlLen;
 
-	bool Go();
-	bool ParseInfo();
+  public:
+  explicit DebFile(const char *FileName);
+  ~DebFile();
+  bool DoItem(Item &I, int &fd) APT_OVERRIDE;
+  bool Process(pkgDirStream::Item &I, const unsigned char *data,
+               unsigned long long size, unsigned long long pos) APT_OVERRIDE;
 
-	static std::string GetInstalledVer(const std::string &package);
+  bool Go();
+  bool ParseInfo();
 
-	std::string Package;
-	std::string Version;
-	std::string DepVer, PreDepVer;
-	unsigned int DepOp, PreDepOp;
+  static std::string GetInstalledVer(const std::string &package);
 
-	char *Config;
-	char *Template;
+  std::string Package;
+  std::string Version;
+  std::string DepVer, PreDepVer;
+  unsigned int DepOp, PreDepOp;
 
-	static pkgCache *Cache;
-	enum { None, IsControl, IsConfig, IsTemplate } Which;
+  char *Config;
+  char *Template;
+
+  static pkgCache *Cache;
+  enum
+  {
+    None,
+    IsControl,
+    IsConfig,
+    IsTemplate
+  } Which;
 };
 
 #endif
